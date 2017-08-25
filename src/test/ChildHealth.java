@@ -8,13 +8,14 @@ import com.android.uiautomator.core.UiObjectNotFoundException;
 import com.android.uiautomator.core.UiScrollable;
 import com.android.uiautomator.core.UiSelector;
 import com.android.uiautomator.testrunner.UiAutomatorTestCase;
+import test.GetObject;
 
-import android.provider.SyncStateContract.Helpers;
 import jp.jun_nama.test.utf7ime.helper.Utf7ImeHelper;
 
-public class buy extends UiAutomatorTestCase {  
+public class ChildHealth extends UiAutomatorTestCase  {  
     public static void main(String[] args) throws IOException {  
-    	new UiAutomatorHelper("buy", "test.buy", "testDemo()", "1");  
+    	new UiAutomatorHelper("ChildHealth", "test.ChildHealth", "testChildHealth", "1");  
+    	
         String workspase, className, jarName, androidId, sdkpath; 
         workspase = "E:\\java\\AND"; // 工程路径，右击项目名-Properties,查看路径，注意路径写双斜杠  
         className = "test.buy"; // 包名.类名  
@@ -26,45 +27,38 @@ public class buy extends UiAutomatorTestCase {
         cts.runTest();   
     }  
     
-    Create create;
     
-    public void testDemo() throws UiObjectNotFoundException, InterruptedException,IOException { 
-    	
+    ClickNew ClickNew=new ClickNew(getUiDevice());
+    UiScrollable listScrollable = new UiScrollable(new UiSelector().scrollable(true));
+    public void testChildHealth() throws UiObjectNotFoundException, InterruptedException,IOException { 
+    	UiDevice.getInstance().pressHome();
+    	ClickNew.ClickByText("和宝贝家长端");
+    	GetObject.ById("com.cmcc.hbb.android.phone.parents:id/index_find").click();
+    	ClickNew.ClickByClass("android.view.View",20);
+    	UiDevice.getInstance().pressBack();    
+    	ClickNew.ClickByClass("android.view.View",21);
+    	ProductBuy();
+    }
 
-   	    create=new Create(getUiDevice());
-    	UiScrollable listScrollable = new UiScrollable(new UiSelector().scrollable(true));
-    	getUiDevice().pressHome();
-    	
-    	create.ClickByText("和宝贝家长端");
-    	    
-    	create.ClickById("com.cmcc.hbb.android.phone.parents:id/index_find");
-    	listScrollable.scrollForward();
-    	
-    	UiDevice mdevice1=getUiDevice();;
-         mdevice1.click(0,300);
-        mdevice1.pressBack();
-        
-    	create.ClickByClass("android.view.View",21);
-    	
-    	create.ClickByClass("android.view.View",6);
+	public void ProductBuy() throws InterruptedException, UiObjectNotFoundException {
 
-    	create.ClickByDesc("￥ 48元 / 半年立即订购");
+    	ClickNew.ClickByClass("android.view.View",6);
+
+    	ClickNew.ClickByDesc("￥ 48元 / 半年立即订购");
          
-    	create.ClickByDesc("下一步");
+    	ClickNew.ClickByDesc("下一步");
         
-        mdevice1.click(300,1700);
-        create.ClickByDesc("下一步");
+    	UiDevice.getInstance().click(300,1700);
+        ClickNew.ClickByDesc("下一步");
 
     	UiObject babyname=new UiObject((new UiSelector()).description("请输入宝宝姓名"));
-    	babyname.setText(Utf7ImeHelper.e("天天"));
+    	babyname.setText(Utf7ImeHelper.e("张天天"));
     	
     	UiObject babyid=new UiObject((new UiSelector()).description("请输入宝宝身份证号"));
     	babyid.setText("130455201605052323");
     	
     	UiObject fathername=new UiObject((new UiSelector()).description("请输入宝宝监护人的姓名"));
     	fathername.setText(Utf7ImeHelper.e("张三"));
-    	
-    	
     	
     	UiObject relation=new UiObject((new UiSelector()).description("请输入宝宝与监护人关系"));
     	relation.setText(Utf7ImeHelper.e("父子"));
@@ -76,7 +70,7 @@ public class buy extends UiAutomatorTestCase {
     	UiObject emai=new UiObject((new UiSelector()).description("请输入您的E-mail"));
     	emai.setText("1066578654@qq.com");
     	
-    	create.ClickByDesc("提交");
+    	ClickNew.ClickByDesc("提交");
     	
     	
     }

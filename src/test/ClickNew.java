@@ -13,9 +13,9 @@ import com.android.uiautomator.testrunner.UiAutomatorTestCase;
 
 
 
-public class Create extends UiAutomatorTestCase{
-	 UiDevice mdevice;
-	 Create(UiDevice device)
+public class ClickNew extends UiAutomatorTestCase{
+	UiDevice mdevice;
+	 public ClickNew(UiDevice device)
 	     {
 	         mdevice =device;
 	     }
@@ -27,12 +27,17 @@ final int CLICK_DESC=2003;
 
 public boolean ClickById(String id) throws InterruptedException {
 	return ClickByInfo(CLICK_ID,id);
+
+}
+public  boolean ClickById(String str,int num) throws InterruptedException, UiObjectNotFoundException {
+	return ClickByInfo3(str,num);
+
 }
 
 public boolean ClickByText(String text) throws InterruptedException {
 	return ClickByInfo(CLICK_TEXT,text);
 }
-public boolean ClickByClass(String cla,int num) throws InterruptedException {
+public boolean ClickByClass(String cla,int num) throws InterruptedException, UiObjectNotFoundException {
 	return ClickByInfo2(cla,num);
 }
 public boolean ClickByDesc(String str) throws InterruptedException {
@@ -51,7 +56,7 @@ private boolean ClickByInfo(int CLICK,String str) throws InterruptedException {
 	UiObject uiobject=new UiObject(us);
 	int i=0;
 	while(!uiobject.exists()&& i<5) {
-		Thread.sleep(2000);
+		Thread.sleep(5000);
 		if(i==4) {
 			return false;
 		}
@@ -66,15 +71,14 @@ private boolean ClickByInfo(int CLICK,String str) throws InterruptedException {
 	}
 	return true;
 }
-public String m_logpathString = "/mnt/sdcard/PerformanceLog.txt";
-private boolean ClickByInfo2(String str,int num) throws InterruptedException {
+
+private boolean ClickByInfo2(String str,int num) throws InterruptedException, UiObjectNotFoundException {
 	
-	UiSelector us=new UiSelector().className(str).index(num); 
+	UiSelector us=new UiSelector().className(str).instance(num); 
 	UiObject uiobject=new UiObject(us);
 	int i=0;
 	while(!uiobject.exists()&& i<5) {
-		SolveProblems();
-		Thread.sleep(2000);
+		Thread.sleep(5000);
 		if(i==4) {
 			return false;
 		}
@@ -83,7 +87,30 @@ private boolean ClickByInfo2(String str,int num) throws InterruptedException {
 	
 	try {
 		UiAutomationLog("click type:CLICK_Class content:"+str+" instance:"+num );
-		uiobject.click();
+		assertNotNull(uiobject);
+		uiobject.clickAndWaitForNewWindow();
+	}catch(UiObjectNotFoundException e) {
+		e.printStackTrace();
+	}
+	return true;
+}
+private boolean ClickByInfo3(String str,int num) throws InterruptedException, UiObjectNotFoundException {
+	
+	UiSelector us=new UiSelector().resourceId(str).instance(num); 
+	UiObject uiobject=new UiObject(us);
+	int i=0;
+	while(!uiobject.exists()&& i<5) {
+		Thread.sleep(5000);
+		if(i==4) {
+			return false;
+		}
+		i++;
+	}
+	
+	try {
+		UiAutomationLog("click type:CLICK_Id content:"+str+" instance:"+num );
+		assertNotNull(uiobject);
+		uiobject.clickAndWaitForNewWindow();
 	}catch(UiObjectNotFoundException e) {
 		e.printStackTrace();
 	}
@@ -91,11 +118,44 @@ private boolean ClickByInfo2(String str,int num) throws InterruptedException {
 }
 
 
-     private void SolveProblems() {
-	// TODO Auto-generated method stub
-	
-}
+	public  void readnum (UiObject obj) throws UiObjectNotFoundException {
+		String s1=obj.getContentDescription();
+		System.out.println(s1);
+		obj.clickAndWaitForNewWindow();
+		UiDevice.getInstance().pressBack();
+		String s2=obj.getContentDescription();
+		System.out.println(s2);
+		if(s1.equals(s2)) {
+			System.out.println("阅读量没有更新");
+		}else {
+			System.out.println("阅读量更新了");
+		}
+		
+	}
 
+	public void ClickByChild(String str1,String str2,int num) throws UiObjectNotFoundException, InterruptedException {
+		
+		UiObject uiobject=new UiObject(new UiSelector().className(str1)).getChild(new UiSelector().className(str2).instance(num));
+		int i=0;
+		while(!uiobject.exists()&& i<5) {
+			Thread.sleep(5000);
+			i++;
+		}
+		
+		try {
+			UiAutomationLog("click type:CLICK_ChildClass content:"+str1+str2+" instance:"+num );
+			assertNotNull(uiobject);
+			uiobject.clickAndWaitForNewWindow();
+		}catch(UiObjectNotFoundException e) {
+			e.printStackTrace();
+		}
+
+		
+	}
+	
+
+     
+     public String m_logpathString = "/mnt/sdcard/PerformanceLog.txt";
 	/* 打log记录在手机中 */
      public void UiAutomationLog(String str) 
      {
@@ -124,8 +184,8 @@ private boolean ClickByInfo2(String str,int num) throws InterruptedException {
              {
                  e.printStackTrace();
              }
+         
          }
-
 }
      
      
