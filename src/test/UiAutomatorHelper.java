@@ -11,24 +11,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class UiAutomatorHelper {
 
 	// 以下参数需要配置，用例集id，用例id，安卓id
 	private static String android_id = "1";
-	private static String jar_name = "Classgroup";
-	private static String test_class = "test.Classgroup"; // 包名.类名(类是哪个要运行的类名就是只放方法的那个)
-	private static String test_name = "testWonderfulMoment";
+	private static String jar_name = "demo1";
+	private static String test_class = "test.Demo"; // 包名.类名(类是哪个要运行的类名就是只放方法的那个)
+	private static String test_name = "test";
 
 	// 工作空间不需要配置，自动获取工作空间目录
 	private static String workspace_path;
-	 public boolean isDebug = true;  
-	  
-	    public void setDebug(boolean isDebug) {  
-	        this.isDebug = isDebug;  
-	    }  
 
 	public static void main(String[] args) {
 		String jarName="", testClass="", testName="", androidId="";
@@ -187,11 +180,7 @@ public class UiAutomatorHelper {
 		String runCmd = "adb shell uiautomator runtest ";
 		String testCmd = jarName + ".jar " + "--nohup -c " + testName;
 		System.out.println("----runTest:  " + runCmd + testCmd);
-		if (isDebug) {  
-            execCmd(runCmd + testCmd + " -e debug true");  
-        } else {  
-            execCmd(runCmd + testCmd);  
-        }  
+		execCmd(runCmd + testCmd);
 	}
 
 	public String getWorkSpase() {
@@ -205,60 +194,31 @@ public class UiAutomatorHelper {
 	 * 
 	 * @param cmd
 	 */
-	   public void execCmd(String cmd) {  
-	        System.out.println("------execute command:  " + cmd);  
-	        String c=getNow();
-	        System.out.println("用例运行开始:"+c);
-	        try {  
-	            Process p = Runtime.getRuntime().exec(cmd);  
-	            InputStream input = p.getInputStream();  
-	            BufferedReader reader = new BufferedReader(new InputStreamReader(  
-	                    input));  
-	            String line ;  
-	            
-	            while ((line = reader.readLine()) != null) {  
-	                if (line.startsWith("INSTRUMENTATION_STATUS: test=")) {  
-	                    saveToFile("运行用例名称："+getTest(line), "report.log", false);  
-	                }  
-	                if (line.startsWith("INSTRUMENTATION_STATUS: current")) {  
-	                    saveToFile("正在运行第"+getCurrent(line)+"个用例！", "report.log", false);  
-	                }  
-	                if (line.startsWith("INSTRUMENTATION_STATUS_CODE:")) {  
-	                    if (getCode(line).equalsIgnoreCase("-1")) {  
-	                        saveToFile("\n"+"---------------运行状态：运行错误！"+"\n", "report.log", false);  
-	                    }else if (getCode(line).equalsIgnoreCase("-2")) {  
-	                        saveToFile("\n"+"---------------运行状态：断言错误！"+"\n", "report.log", false);  
-	                    }else {  
-	                        saveToFile("运行状态：运行OK！", "report.log", false);  
-	                    }  
-	                }  
-	                System.out.println(line);  
-	                saveToFile(line, "runlog.log", false);  
-	            } 
-	            
-	            
-	  
-	        } catch (IOException e) {  
-	            e.printStackTrace();  
-	        }  
-	    }  
-
-	public String getCode(String text) {  
-		    return text.substring(29, text.length());  
-		}  
-	public String   getCurrent(String text) {  
-		    return text.substring(32, text.length());  
-		} 
-
-	private String getTest(String text) {
-		return text.substring(29, text.length()); 
+	public void execCmd(String cmd) {
+		System.out.println("----execCmd:  " + cmd);
+		try {
+			Process p = Runtime.getRuntime().exec(cmd);
+			// 正确输出流
+			InputStream input = p.getInputStream();
+			BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+			String line = "";
+			while ((line = reader.readLine()) != null) {
+				System.out.println(line);
+				saveToFile(line, "runlog.log", false);
+			}
+			// 错误输出流
+			InputStream errorInput = p.getErrorStream();
+			BufferedReader errorReader = new BufferedReader(new InputStreamReader(errorInput));
+			String eline = "";
+			while ((eline = errorReader.readLine()) != null) {
+				System.out.println(eline);
+				saveToFile(eline, "runlog.log", false);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
-	public String getNow() {//获取当前时间  
-	    Date time = new Date();  
-	    SimpleDateFormat now = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
-	    String c = now.format(time);  
-	    return c;  
-	    }  
+
 	/**
 	 * 需求：写如内容到指定的文件中
 	 * 

@@ -126,9 +126,7 @@ private boolean ClickByInfo3(String str,int num) throws InterruptedException, Ui
 		String s2=obj.getContentDescription();
 		System.out.println(s2);
 		if(s1.equals(s2)) {
-			System.out.println("阅读量没有更新");
-		}else {
-			System.out.println("阅读量更新了");
+			fail("阅读量没有更新");
 		}
 		
 	}

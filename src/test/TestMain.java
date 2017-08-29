@@ -26,9 +26,8 @@ public class TestMain extends UiAutomatorTestCase {
         //cts.runTest();   
           
     }  
-    
+    //登录
     public static void testDemo() throws UiObjectNotFoundException {  
-    	
     	UiObject username=new UiObject((new UiSelector()).resourceId("com.cmcc.hbb.android.phone.parents:id/login_phone"));
     	username.clearTextField();
     	username.setText("17000000007");
@@ -37,7 +36,6 @@ public class TestMain extends UiAutomatorTestCase {
     	password.setText("000007");
     	UiObject login=new UiObject(new UiSelector().resourceId("com.cmcc.hbb.android.phone.parents:id/login_bt"));
     	login.clickAndWaitForNewWindow();    
-    	
     }  
       
 }  
